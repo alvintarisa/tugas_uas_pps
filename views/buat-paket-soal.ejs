@@ -1,0 +1,191 @@
+<%- include ("./header/header_html.ejs") %>
+<body>
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Buat Paket Soal</h1>
+    </div>
+
+    <section class="section">
+      <div class="row">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Form Buat Paket Soal</h5>
+
+              <!-- General Form Elements -->
+              <form action="/paket-soal" method="POST" id="paket-soal-form">
+                <div class="row mb-3">
+                  <label for="nama" class="col-sm-2 col-form-label">Nama Paket Soal</label>
+                  <div class="col-sm-10">
+                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama Paket Soal">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Mata Kuliah:</label>
+                    <div class="col-sm-10">
+                        <select class="form-select" aria-label="Default select example" name="id_mata_kuliah", id="id_mata_kuliah" onchange="setView()">
+                          <option selected> -Pilih Mata Kuliah-</option>
+                          <% for(var i = 0; i < data.mata_kuliah.length; i++) {  %>
+                          <option value="<%= data.mata_kuliah[i].id %>"> <%= data.mata_kuliah[i].nama %> </option>
+                          <% } %>
+                        </select>
+                    </div>
+                </div>
+                
+                <fieldset class="row mb-3">
+                    <!-- <label for="soal" class="col-sm-2 col-form-label">Soal</label> -->
+                        <legend class="col-form-label col-sm-2 pt-0">Bab soal:</legend>
+                        <div class="col-sm-10" id="checkbox_bab_soal" onchange="getData()">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="gridCheck1" checked disabled>
+                                <label class="form-check-label" for="gridCheck1">
+                                Bab Mata Pelajaran
+                                </label>
+                            </div>
+                        </div>
+                </fieldset>
+                <p hidden id="banyak_checkbox"></p>
+                <p hidden id="soal_maks"></p>
+                <p hidden id="banyak_soal_p"></p>
+                <div class="row mb-3">
+                  <label for="banyak_soal" class="col-sm-2 col-form-label">Banyak Soal : </label>
+                  <div class="col-sm-10">
+                    <input type="text" id="banyak_soal" name="banyak_soal" class="form-control" placeholder="Banyak soal">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label for="waktu_pengerjaan" class="col-sm-2 col-form-label">Waktu Pengerjaan : </label>
+                  <div class="col-sm-10">
+                    <input type="text" id="waktu_pengerjaan" name="waktu_pengerjaan" class="form-control" placeholder="(menit)">
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <button type="button" class="btn btn-success float-right" onclick="cekData()">Simpan Paket Soal</button>
+                </div>
+
+              </form><!-- End General Form Elements -->
+
+            </div>
+          </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+<script>
+    function setView() {
+        $.ajax({
+            url: 'http://localhost:2500/bab-materi-read',
+            method: "GET",
+        }).done(function (data) {
+            if (data.success) {
+                // console.log('OKOKOK');
+                var divCheckBox = document.getElementById("checkbox_bab_soal");
+                console.log(data.data);
+                divCheckBox.innerHTML='';
+                let counter = 0;
+                data.data.forEach(element => {
+                    if (element.id_mata_kuliah==document.getElementById("id_mata_kuliah").value) {
+
+                        // console.log(element);
+                        var divFormCheck = document.createElement('div');
+                        divFormCheck.setAttribute('class', 'form-check');
+
+                        var checkbox = document.createElement("input");
+                        checkbox.setAttribute('type', 'checkbox');
+                        checkbox.setAttribute('id', "checkbox_"+counter);
+                        checkbox.setAttribute('value', element.id);
+                        checkbox.setAttribute('class', 'form-check-input');
+                        checkbox.setAttribute('name', 'paket_soal');
+
+                        var label = document.createElement("label");
+                        label.setAttribute('for', "checkbox_"+counter);
+                        label.setAttribute('class', 'form-check-label');
+                        label.textContent = element.nama;
+
+                        divCheckBox.appendChild(checkbox);
+                        divCheckBox.appendChild(label);
+                        
+                        // option.value = element.id;
+                        // option.text = element.nama;
+                        divFormCheck.appendChild(checkbox);
+                        divFormCheck.appendChild(label);
+                        divCheckBox.appendChild(divFormCheck);
+                        counter+=1;
+                    }
+                });
+                document.getElementById("banyak_checkbox").innerHTML = counter;
+                var banyak_soal = document.getElementById("banyak_soal");
+                banyak_soal.setAttribute('placeholder', "Banyak Soal");
+                return;
+            }
+        }).fail(function () {
+            console.log('Gagal ambil data index.html');
+            return;
+        });
+    }
+    
+    async function getData() {
+        var selected = [];
+        for (let i = 0; i < document.getElementById("banyak_checkbox").innerHTML; i++) {
+            if (document.getElementById('checkbox_'+i).checked) {  
+                selected.push({id_bab_materi: document.getElementById('checkbox_'+i).value});
+            }
+        }
+
+        console.log(selected);
+        console.log(JSON.stringify(selected));
+
+        var banyak_soal = document.getElementById("banyak_soal");
+        console.log(selected.length);
+        if (selected.length == 0) {
+          banyak_soal.setAttribute('placeholder', "Banyak Soal");
+          console.log("Hei");
+          
+        } else {
+            const response = await fetch('/soal-count', {
+              // id_bab_materi: selected,
+              method: 'post',
+              headers: new Headers({
+                  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+              }),
+              body: JSON.stringify(selected)
+          });
+          
+          const json = await response.json();
+          document.getElementById("soal_maks").innerHTML = json.banyak_soal[0].banyak_soal;
+          banyak_soal.setAttribute('placeholder', "Banyak Soal (Maks. "+json.banyak_soal[0].banyak_soal+')');
+        }
+
+        // table_body;
+    }
+
+    function cekData() {
+        var a = document.getElementById("soal_maks").innerHTML;
+        var b = document.getElementById("banyak_soal_p");
+        b.innerHTML = document.getElementById("banyak_soal").value;
+        // console.log("Banyak Soal "+document.getElementById("banyak_soal").value);
+        // console.log("Maks SOal "+document.getElementById("soal_maks").innerHTML);
+        // paket-soal-form
+        // alert("Hello\nHow are you?");
+        if (a < b.innerHTML) {
+            alert("Mohon maaf\nBanyak soal pada database tidak dapat mencukupi banyak soal pada paket soal.");
+            // console.log(a+" < "+b.innerHTML);
+        } else {
+
+          document.getElementById("paket-soal-form").submit();
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Soal</title>
+    <link rel="icon" type="image/x-icon" href="./public/img/icon_website(non-lisensi)_circle.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div id="body">
+        <div class="row" style="margin: 1%; background-color: #404040"> 
+            <div id="header" style="background-color: #FFFFFF; margin: 1%; margin-bottom: 0%; padding: 0%; max-width: 98%;">
+                <h2>
+                    Buat Soal?
+                </h2>
+            </div>
+            <div id="navbar">
+                <h2>
+                    Buat Soal
+                </h2>
+            </div>
+            <div class="col" style="background-color: #FFFFFF; margin: 1%;">
+                <form action="/buat-soal-post" method="POST">
+                    <div class="row" style="margin: 1%;">
+                        <label for="soal">Soal:</label>
+                        <input type="text" id="soal" name="soal">
+                        <div class="row" style="margin: 1%;">
+                            <div class="col">
+                                <input type="radio" id="pilihan_1" name="jawaban" value="pilihan_1">
+                                <input type="text" id="isi_pilihan_1" name="isi_pilihan_1">
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="pilihan_2" name="jawaban" value="pilihan_2">
+                                <input type="text" id="isi_pilihan_2" name="isi_pilihan_2">
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="pilihan_3" name="jawaban" value="pilihan_3">
+                                <input type="text" id="isi_pilihan_3" name="isi_pilihan_3">
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="pilihan_4" name="jawaban" value="pilihan_4">
+                                <input type="text" id="isi_pilihan_4" name="isi_pilihan_4">
+                            </div>
+                        </div>
+                        
+                        <label for="soal">Tingkat Kesulitan:</label>
+                        <select name="kesulitan" id="kesulitan">
+                            <% for(var i = 0; i < data.banyakOpsi; i++) {  %>
+                            <option value="<%= i+1 %>"> <%= i+1 %> </option>
+                            <% } %>
+                        </select>
+                        <label for="soal">Mata Kuliah:</label>
+                        <select name="id_mata_kuliah" id="id_mata_kuliah" onchange="setView()">
+                            <option value=""> -Pilih Mata Kuliah- </option>
+                            <% for(var i = 0; i < data.mata_kuliah.length; i++) {  %>
+                            <option value="<%= data.mata_kuliah[i].id %>"> <%= data.mata_kuliah[i].nama %> </option>
+                            <% } %>
+                        </select>
+                        <label for="id_bab_materi">Bab Materi:</label>
+                        <select name="id_bab_materi" id="id_bab_materi"></select>
+                        <input style="margin-top: 1%;" type="submit" value="Simpan Soal">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+<script>
+    function ubahIsi() {
+        $.ajax({
+            url: 'http://localhost:2500/paket-soal-read',
+            method: "GET",
+        }).done(function (data) {
+            if (data.success) {
+                $('Isi_html').replaceWith(data.data);
+
+                return;
+            }
+        }).fail(function () {
+            console.log('Gagal ambil data index.html');
+            return;
+        });
+    }
+
+    function setView() {
+        var dropdownKesulitan = document.getElementById("tingkat_kesulitan");
+        // array.forEach(element => {
+            
+        // });
+    }
+
+    
+    function setView() {
+        $.ajax({
+            url: 'http://localhost:2500/bab-materi-read',
+            method: "GET",
+        }).done(function (data) {
+            if (data.success) {
+                // console.log('OKOKOK');
+                var dropdownKesulitan = document.getElementById("id_bab_materi");
+                console.log(data.data);
+                dropdownKesulitan.innerHTML='';
+                data.data.forEach(element => {
+                    if (element.id_mata_kuliah==document.getElementById("id_mata_kuliah").value) {
+                        // console.log(element);
+                        var option = document.createElement("option");
+                        option.value = element.id;
+                        option.text = element.nama;
+                        dropdownKesulitan.add(option);
+                    }
+                });
+                return;
+            }
+        }).fail(function () {
+            console.log('Gagal ambil data index.html');
+            return;
+        });
+        // var dropdownKesulitan = document.getElementById("bab_materi");
+        // array.forEach(element => {
+            
+        // });
+        // array.forEach(element => {
+            
+        // });
+    }
+
+    function testing() {
+        console.log(data);
+    }
+
+    
+</script>
+</html>

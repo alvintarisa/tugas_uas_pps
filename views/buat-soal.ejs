@@ -1,0 +1,128 @@
+<%- include ("./header/header_html.ejs") %>
+<body>
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Buat Soal</h1>
+    </div>
+
+    <section class="section">
+      <div class="row">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Form Buat Soal</h5>
+
+              <!-- General Form Elements -->
+              <form action="/buat-soal-post" method="POST">
+                <div class="row mb-3">
+                  <label for="soal" class="col-sm-2 col-form-label">Soal</label>
+                  <div class="col-sm-10">
+                    <input type="text" id="soal" name="soal" class="form-control">
+                  </div>
+                </div>
+                <fieldset class="row mb-3">
+                    <!-- <label for="soal" class="col-sm-2 col-form-label">Soal</label> -->
+                    <legend class="col-form-label col-sm-2 pt-0">Jawaban</legend><br>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jawaban" id="pilihan_1" value="pilihan_1" checked>
+                            <input type="text" id="isi_pilihan_1" name="isi_pilihan_1" placeholder="A">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jawaban" id="pilihan_2" value="pilihan_2">
+                            <input type="text" id="isi_pilihan_2" name="isi_pilihan_2"  placeholder="B">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jawaban" id="pilihan_3" value="pilihan_3">
+                            <input type="text" id="isi_pilihan_3" name="isi_pilihan_3"  placeholder="C">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="jawaban" id="pilihan_4" value="pilihan_4">
+                            <input type="text" id="isi_pilihan_4" name="isi_pilihan_4"  placeholder="D">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Kesulitan:</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" aria-label="Default select example" name="kesulitan", id="kesulitan">
+                      <option selected>Tingkat Kesulitan</option>
+                      <% for(var i = 0; i < data.banyakOpsi; i++) {  %>
+                      <option value="<%= i+1 %>"> <%= i+1 %> </option>
+                      <% } %>
+                    </select>
+                  </div>
+                </div>
+    
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Mata Kuliah:</label>
+                    <div class="col-sm-10">
+                      <select class="form-select" aria-label="Default select example" name="id_mata_kuliah", id="id_mata_kuliah" onchange="setView()">
+                        <option selected> -Pilih Mata Kuliah-</option>
+                        <% for(var i = 0; i < data.mata_kuliah.length; i++) {  %>
+                        <option value="<%= data.mata_kuliah[i].id %>"> <%= data.mata_kuliah[i].nama %> </option>
+                        <% } %>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label">Bab Materi:</label>
+                    <div class="col-sm-10">
+                      <select class="form-select" aria-label="Default select example" name="id_bab_materi" id="id_bab_materi">
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <button type="submit" class="btn small-box btn-success">Simpan Soal</button>
+                </div>
+
+              </form><!-- End General Form Elements -->
+
+            </div>
+          </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+<script>
+    function setView() {
+        $.ajax({
+            url: 'http://localhost:2500/bab-materi-read',
+            method: "GET",
+        }).done(function (data) {
+            if (data.success) {
+                // console.log('OKOKOK');
+                var dropdownKesulitan = document.getElementById("id_bab_materi");
+                console.log(data.data);
+                dropdownKesulitan.innerHTML='';
+                data.data.forEach(element => {
+                    if (element.id_mata_kuliah==document.getElementById("id_mata_kuliah").value) {
+                        // console.log(element);
+                        var option = document.createElement("option");
+                        option.value = element.id;
+                        option.text = element.nama;
+                        dropdownKesulitan.add(option);
+                    }
+                });
+                return;
+            }
+        }).fail(function () {
+            console.log('Gagal ambil data index.html');
+            return;
+        });
+    }
+</script>
+</html>

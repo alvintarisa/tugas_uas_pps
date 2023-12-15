@@ -1,0 +1,191 @@
+<%- include ("./header/header_html.ejs") %>
+<body onload="setMataKuliah()">
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Buat Soal</h1>
+    </div>
+
+    <section class="section">
+      <div class="row">
+
+          <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Form Buat Soal</h5>
+
+              <!-- General Form Elements -->
+              <form action="/edit-soal-post" method="POST">
+                <input hidden type="text" id="id" name="id" class="form-control" value="<%= data.id %>">
+                <div class="row mb-3">
+                  <label for="soal" class="col-sm-2 col-form-label">Soal</label>
+                  <div class="col-sm-10">
+                    <input type="text" id="soal" name="soal" class="form-control" value="<%= data.soal.soal %>">
+                  </div>
+                </div>
+                <fieldset class="row mb-3">
+                    <!-- <label for="soal" class="col-sm-2 col-form-label">Soal</label> -->
+                    <legend class="col-form-label col-sm-2 pt-0">Jawaban</legend><br>
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <% if(data.soal.jawaban != 'pilihan_1') { %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_1" value="pilihan_1">
+                            <% }else{ %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_1" value="pilihan_1" checked>
+                            <% } %>
+                            <input type="text" id="isi_pilihan_1" name="isi_pilihan_1" placeholder="A" value="<%= data.soal.pilihan_1 %>">
+                        </div>
+                        <div class="form-check">
+                            <% if(data.soal.jawaban != 'pilihan_2') { %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_2" value="pilihan_2">
+                            <% }else{ %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_2" value="pilihan_2" checked>
+                            <% } %>
+                            <input type="text" id="isi_pilihan_2" name="isi_pilihan_2"  placeholder="B" value="<%= data.soal.pilihan_2 %>">
+                        </div>
+                        <div class="form-check">
+                            <% if(data.soal.jawaban != 'pilihan_3') { %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_3" value="pilihan_3">
+                            <% }else{ %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_3" value="pilihan_3" checked>
+                            <% } %>
+                            <input type="text" id="isi_pilihan_3" name="isi_pilihan_3"  placeholder="C" value="<%= data.soal.pilihan_3 %>">
+                        </div>
+                        <div class="form-check">
+                            <% if(data.soal.jawaban != 'pilihan_4') { %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_4" value="pilihan_4">
+                            <% }else{ %>
+                                <input class="form-check-input" type="radio" name="jawaban" id="pilihan_4" value="pilihan_4" checked>
+                            <% } %>
+                            <input type="text" id="isi_pilihan_4" name="isi_pilihan_4"  placeholder="D" value="<%= data.soal.pilihan_4 %>">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">Kesulitan:</label>
+                  <div class="col-sm-10">
+                    <select class="form-select" aria-label="Default select example" name="kesulitan", id="kesulitan">
+                        <option>Tingkat Kesulitan</option>
+                        <% for(var i = 0; i < data.banyakOpsi; i++) {  %>
+                            <% if(data.soal.kesulitan-1 != i) { %>
+                                <option value="<%= i+1 %>"> <%= i+1 %> </option>
+                            <% }else{ %>
+                                <option value="<%= i+1 %>" selected> <%= i+1 %> </option>
+                            <% } %>
+                        <% } %>
+                    </select>
+                  </div>
+                </div>
+    
+                <div class="row mb-3"  >
+                    <label class="col-sm-2 col-form-label">Mata Kuliah:</label>
+                    <div class="col-sm-10">
+                      <select class="form-select" aria-label="Default select example" name="id_mata_kuliah", id="id_mata_kuliah" onchange="setView()">
+                        <option selected> -Pilih Mata Kuliah-</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <label class="col-sm-2 col-form-label" for="id_bab_materi">Bab Materi:</label>
+                    <div class="col-sm-10">
+                      <select class="form-select" aria-label="Default select example" name="id_bab_materi" id="id_bab_materi">
+                        <option selected> -Pilih Bab Materi-</option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <button type="submit" class="btn btn-success float-right">Simpan Perubahan</button>
+                </div>
+
+              </form><!-- End General Form Elements -->
+
+            </div>
+          </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+<script>
+    function setMataKuliah() {
+        $.ajax({
+            url: 'http://localhost:2500/mata-kuliah-read',
+            method: "GET",
+        }).done(function (data) {
+            if (data.success) {
+                // console.log('OKOKOK');
+                var dropdown_mata_kuliah = document.getElementById("id_mata_kuliah");
+                console.log("<%= data.soal.id_mata_kuliah %>");
+                dropdown_mata_kuliah.innerHTML='';
+                data.data.forEach(element => {
+                    if ('<%- data.soal.id_mata_kuliah %>'==element.id) {
+                        // console.log(element);
+                        var option = document.createElement("option");
+                        option.value = element.id;
+                        option.text = element.nama;
+                        option.setAttribute("selected", true);
+                        dropdown_mata_kuliah.add(option);
+                    }else{
+                        var option = document.createElement("option");
+                        option.value = element.id;
+                        option.text = element.nama;
+                        dropdown_mata_kuliah.add(option);
+                    }
+                });
+                
+                setView();
+                return;
+            }
+        }).fail(function () {
+            console.log('Gagal ambil data index.html');
+            return;
+        });
+    }
+
+    function setView() {
+        $.ajax({
+            url: 'http://localhost:2500/bab-materi-read',
+            method: "GET",
+        }).done(function (data) {
+            if (data.success) {
+                // console.log('OKOKOK');
+                var dropdown_bab = document.getElementById("id_bab_materi");
+                console.log(data.data);
+                dropdown_bab.innerHTML='';
+                data.data.forEach(element => {
+                            // console.log(element);
+                    if (element.id_mata_kuliah==document.getElementById("id_mata_kuliah").value) {
+                        if ('<%- data.soal.id_bab_materi %>'==element.id) {
+                            console.log(element);
+                            var option = document.createElement("option");
+                            option.value = element.id;
+                            option.text = element.nama;
+                            option.setAttribute("selected", true);
+                            dropdown_bab.add(option);
+                        }else{
+                            var option = document.createElement("option");
+                            option.value = element.id;
+                            option.text = element.nama;
+                            dropdown_bab.add(option);
+                        }
+                    }
+                });
+                return;
+            }
+        }).fail(function () {
+            console.log('Gagal ambil data index.html');
+            return;
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,88 @@
+<%- include ("./header/header_html.ejs") %>
+<body class="toggle-sidebar" onload="setView()">
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+
+  <main id="main" class="main">
+
+    <section class="section">
+        
+    <!-- Default box -->
+    <div class="card card-outline">
+        <!-- /.card-header-->
+        <div class="card-body">
+            <!-- Small Box (Stat card) -->
+            <div class="col">
+                <div class="row">
+                    <div class="btn small-box btn-info" onClick="location.href='/soal'" style="--bs-btn-color: white; --bs-btn-bg: #012970;--bs-btn-hover-bg: #FFFFFF;--bs-btn-hover-border-color: black; --bs-btn-border-color: black; margin: 0.5%;">
+                        <div class="inner">
+                            <h3><i class="bi bi-card-list">
+                                <h5>Daftar Soal</h5></i></i></h3>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-file-medical-alt"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn small-box btn-info" onClick="location.href='/paket-soal'" style="--bs-btn-color: white; --bs-btn-bg: #012970;--bs-btn-hover-bg: #FFFFFF; --bs-btn-hover-border-color: black; --bs-btn-border-color: black; margin: 0.5%;">
+                        <div class="inner">
+                            <h3><i class="bx bxs-food-menu"><h5>Daftar Paket Soal</h5></i></h3>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="btn small-box btn-info" onClick="location.href='/soal'" style="--bs-btn-color: white; --bs-btn-bg: #012970;--bs-btn-hover-bg: #FFFFFF; --bs-btn-hover-border-color: black; --bs-btn-border-color: black; margin: 0.5%;">
+                        <div class="inner">
+                            <h3><i class="ri-account-box-fill"><h5>Daftar Pengguna</h5></i></i></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /.card card-success card-outline -->
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+<script>
+    function setView() {
+        // $.ajax({
+        //     url: 'http://localhost:2500/bab-materi-read',
+        //     method: "GET",
+        // }).done(function (data) {
+        //     if (data.success) {
+        //         // console.log('OKOKOK');
+        //         var dropdownKesulitan = document.getElementById("id_bab_materi");
+        //         console.log(data.data);
+        //         dropdownKesulitan.innerHTML='';
+        //         data.data.forEach(element => {
+        //             if (element.id_mata_kuliah==document.getElementById("id_mata_kuliah").value) {
+        //                 // console.log(element);
+        //                 var option = document.createElement("option");
+        //                 option.value = element.id;
+        //                 option.text = element.nama;
+        //                 dropdownKesulitan.add(option);
+        //             }
+        //         });
+        //         return;
+        //     }
+        // }).fail(function () {
+        //     console.log('Gagal ambil data index.html');
+        //     return;
+        // });
+    }
+</script>
+</html>
+
+

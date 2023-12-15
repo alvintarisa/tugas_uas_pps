@@ -1,0 +1,135 @@
+<%- include ("./header/header_html.ejs") %>
+<body>
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+  <main id="main" class="main">
+    <div class="col">
+        <h1 style="display: inline-block;">
+            Detail Paket Soal
+            <%- console.log(data.mata_kuliah) %>
+        </h1>
+    </div>
+    <div class="pagetitle">
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">
+                        <form action="/edit-paket-soal-post" method="post" id="form_update">
+                            <input hidden type="text" id="id_paket_soal" name="id_paket_soal" class="form-control" value="<%= data.id_paket_soal %>">
+                            <div class="row mb-3">
+                                <label for="paket_soal_nama" class="col-sm-2 col-form-label">Paket Soal:</label>
+                                <div class="col-sm-10">
+                                  <input type="text" id="paket_soal_nama" name="paket_soal_nama" class="form-control" value="<%= data.detail_paket_soal.nama %>" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="banyak_soal" class="col-sm-2 col-form-label">Banyak Soal:</label>
+                                <div class="col-sm-10">
+                                  <input type="text" id="banyak_soal" name="banyak_soal" class="form-control" value="<%= data.detail_paket_soal.banyak_soal %>" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="mata_kuliah" class="col-sm-2 col-form-label"> Mata Kuliah:</label>
+                                <div class="col-sm-10">
+                                  <input type="text" id="mata_kuliah" name="mata_kuliah" class="form-control" value="<%= data.detail_paket_soal.nama_mata_kuliah %>" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="waktu_pengerjaan" class="col-sm-2 col-form-label"> Waktu Pengerjaan (mnt):</label>
+                                <div class="col-sm-10">
+                                  <input type="text" id="waktu_pengerjaan" name="waktu_pengerjaan" class="form-control" value="<%= data.detail_paket_soal.waktu_pengerjaan %>">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                  <input type="button" id="edit_btn" name="edit_btn" class="btn small-box btn-warning" style="color: white;" value="Edit" onclick="cekData()">
+                            </div>
+                        </form>
+                    </div>
+                    <!-- End Table with stripped rows -->
+                    
+                    <div class="card" id="list_soal">
+                        <div class="card-body">
+                            <h5 class="card-title">Soal <p class="badge bg-success">Mudah</p></h5>
+
+                        </div>
+                    </div><!-- End Default Badges -->
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+<script>
+    async function getData() {
+        const response = await fetch('/paket-detail/<%- data.id_paket_soal %>', {
+              // id_bab_materi: selected,
+              method: 'get',
+              headers: new Headers({
+                  'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+              }),
+          });
+          console.log('<%- data.id_paket_soal %>');
+          const json = await response.json();
+
+        console.log(tab+"??????");
+
+        // document.getElementById().innerHTML = tab;
+        // document.getElementById('tabody').innerHTML = tab;
+        let data = [];
+        var tab = '';
+        console.log(json);
+        json.data.forEach(function (paket_soal, index) {
+            if (paket_soal.kesulitan == 1) {
+                tab = tab + `
+                            <div class="card-body">
+                                <h5 class="card-title"> ${index+1}. ${paket_soal.soal} <p class="badge bg-success">Mudah</p></h5>
+                `;
+            } else if (paket_soal.kesulitan == 2) {
+                tab = tab + `
+                            <div class="card-body">
+                                <h5 class="card-title"> ${index+1}.${paket_soal.soal} <p class="badge bg-warning">Sedang</p></h5>
+                `;
+            } else {
+                tab = tab + `
+                            <div class="card-body">
+                                <h5 class="card-title"> ${index+1}.${paket_soal.soal} <p class="badge bg-danger">Sulit</p></h5>
+                `;
+            }
+            tab = tab + `
+                                <h5 class="card-body">A. ${paket_soal.pilihan_1}</h5>
+                                <h5 class="card-body">B. ${paket_soal.pilihan_2}</h5>
+                                <h5 class="card-body">C. ${paket_soal.pilihan_3}</h5>
+                                <h5 class="card-body">D. ${paket_soal.pilihan_4}</h5>
+                            </div>
+                `;
+        });
+        document.getElementById('list_soal').innerHTML = tab;
+        // table_body;
+        return tab;
+    }
+
+    function cekData() {
+        console.log(document.getElementById("waktu_pengerjaan").value, "Hmmm");
+        if(document.getElementById("waktu_pengerjaan").value <= 0){
+            alert("Mohon maaf\nwaktu pengerjaan tidak boleh <= 0!");
+        }else{
+            document.getElementById("form_update").submit();
+        }
+    }
+
+    $(document).ready(function () {
+        var soal = getData();
+        console.log(soal);
+    });
+</script>
+</html>

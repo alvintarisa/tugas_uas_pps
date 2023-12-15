@@ -1,0 +1,115 @@
+<%- include ("./header/header_html.ejs") %>
+<body>
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+  <main id="main" class="main">
+    <div class="col">
+        <h1 style="display: inline-block;">
+            Daftar Soal
+        </h1>
+    </div>
+    <div class="pagetitle">
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"> 
+                        <div class="header-nav ms-auto">
+                            <a href="buat-soal" class="btn btn-success">
+                                Tambah Soal
+                            </a>
+                        </div>
+                    </h5>
+                    <p>Berikut adalah daftar soal:</p>
+
+                    <!-- Table with stripped rows -->
+                    <table class="" id="soal_table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Soal</th>
+                            <th>Option</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabody" name="tabody">
+
+                        </tbody>
+                    </table>
+                    <!-- End Table with stripped rows -->
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+
+<script>
+    async function getData() {
+        const response = await fetch('/soal-read');
+        const json = await response.json();
+        // console.log(json.soal_soal+'????');
+
+        console.log(tab+"??????");
+
+        // document.getElementById().innerHTML = tab;
+        // document.getElementById('tabody').innerHTML = tab;
+        $('#soal_table').DataTable ({
+            // "title": 'My column title',
+            "data" : json.soal_soal,
+            "columns": [
+                {"data": 'id'},
+                {"data": 'soal'},
+                {
+                    "data": 'id',
+                    "render": function ( data, type, row, meta ) {
+                        return '<a href="edit-soal/'+data+'" class="btn btn-warning" style="color:white;" style="" title="Edit">Edit</a>'+'<a href="/delete-soal-post/'+data+'" class="btn btn-danger" style="color:white; margin-left:1%" style="" title="Hapus">Hapus</a>';
+                    }
+                }
+            ],
+            "autoWidth": false
+        });
+        let data = [];
+        var tab = '';
+        // console.log(json);
+        let counter = 0;
+        json.soal_soal.forEach(function (soal) {
+            if (counter==10) {
+                return false;
+            }
+            tab = tab + `
+            <tr>
+                <td>${soal.id}</td>
+                <td>${soal.soal}</td>
+                <td style="">
+                    <a href="edit-soal/${soal.id}" class="btn btn-warning" style="color:white;" style="" title="Edit">
+                        Edit
+                    </a>
+                    <a href="/delete-soal-post/${soal.id}" class="btn btn-danger" style="color:white;" title="Hapus">
+                        Hapus
+                    </a>
+                </td>
+            </tr>`;
+            counter+=1;
+        });
+        document.getElementById('tabody').innerHTML = tab;
+        // table_body;
+        return tab;
+    }
+
+    $(document).ready(function () {
+        var soal = getData();
+        console.log(soal);
+    });
+    
+
+</script>
+</html>

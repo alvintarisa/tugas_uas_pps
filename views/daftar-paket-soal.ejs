@@ -1,0 +1,114 @@
+<%- include ("./header/header_html.ejs") %>
+<body>
+  <%- include ("./header/header.ejs") %>
+
+  <%- include ("./nav_bar.ejs") %>
+  <main id="main" class="main">
+    <div class="col">
+        <h1 style="display: inline-block;">
+            Daftar Paket Soal
+            <%- console.log(data.mata_kuliah) %>
+        </h1>
+    </div>
+    <div class="pagetitle">
+    </div><!-- End Page Title -->
+
+    <section class="section" style="overflow-x:scroll; width:100%; display:block;">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"> 
+                        <div class="header-nav ms-auto">
+                            <a href="buat-paket-soal" class="btn btn-success">
+                                Tambah Paket Soal
+                            </a>
+                        </div>
+                    </h5>
+                    <p>Berikut adalah daftar paket soal:</p>
+
+                    <!-- Table with stripped rows -->
+                    <table class="" id="soal_table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Banyak Soal</th>
+                            <th>Mata Kuliah</th>
+                            <th>Waktu Pengerjaan</th>
+                            <th>Option</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tabody" name="tabody">
+
+                        </tbody>
+                    </table>
+                    <!-- End Table with stripped rows -->
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+  <%- include ("./footer/footer.ejs") %>
+</body>
+
+<%- include ("./footer/footer_html.ejs") %>
+
+<script>
+    async function getData() {
+        const response = await fetch('/paket-soal-read');
+        const json = await response.json();
+        let data = [];
+        var tab = '';
+
+        json.data.forEach(function (paket_soal) {
+            tab = tab + `
+            <tr>
+                <td>${paket_soal.id}</td>
+                <td>${paket_soal.nama}</td>
+                <td>${paket_soal.banyak_soal}</td>
+                <td>${paket_soal.nama_mata_kuliah}</td>
+                <td>${paket_soal.waktu_pengerjaan}</td>
+                <td style="">
+                    <a href="/paket-soal-detail/${paket_soal.id}" class="btn btn-info" style="color:white;" style="" title="Detail">
+                        Detail
+                    </a>
+                    <!-- <a href="update-paket_soal/${paket_soal.id}" class="btn btn-warning" style="color:white;" style="" title="Edit">
+                        Edit
+                    </a> -->
+                    <a href="hapus-paket_soal/${paket_soal.id}" class="btn btn-danger" style="color:white;" title="Hapus">
+                        Hapus
+                    </a>
+                </td>
+            </tr>`;
+        });
+        $('#soal_table').DataTable ({
+            "data" : json.data,
+            "columns": [
+                {"data": 'id'},
+                {"data": 'nama'},
+                {"data": 'banyak_soal'},
+                {"data": 'nama_mata_kuliah'},
+                {"data": 'waktu_pengerjaan'},
+                {
+                    "data": 'id',
+                    "render": function ( data, type, row, meta ) {
+                        return '<a href="/paket-soal-detail/'+data+'" class="btn btn-info" style="color:white;" style="" title="Detail">Detail</a> <!-- <a href="update-paket_soal/'+data+'" class="btn btn-warning" style="color:white;" style="" title="Edit">Edit</a> -->'+'<a href="delete-paket_soal/'+data+'" class="btn btn-danger" style="color:white; margin-left:1%" style="" title="Hapus">Hapus</a>';
+                    }
+                }
+            ],
+            // "autoWidth": false
+        });
+        document.getElementById('tabody').innerHTML = tab;
+        return tab;
+    }
+
+    $(document).ready(function () {
+        var soal = getData();
+    });
+    
+
+</script>
+</html>

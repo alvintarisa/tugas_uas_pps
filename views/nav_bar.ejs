@@ -1,0 +1,67 @@
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+        <% if (typeof data.halaman_utama === 'undefined') { %>
+            <li class="nav-item ">
+                <a class="nav-link collapsed" href="/">
+                    <i class="bi bi-grid"></i>
+                    <span>Halaman Utama</span>
+                </a>
+            </li>
+        <%} else { %>
+            <li class="nav-item ">
+                <a class="nav-link" href="/">
+                    <i class="bi bi-grid"></i>
+                    <span>Halaman Utama</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (typeof data.soal === 'undefined') { %>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/soal">
+                    <i class="bi bi-card-list"></i>
+                    <span>Daftar Soal</span>
+                </a>
+            </li>
+        <%} else { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/soal">
+                    <i class="bi bi-card-list"></i>
+                    <span>Daftar Soal</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (typeof data.paket_soal === 'undefined') { %>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/paket-soal">
+                    <i class="bx bxs-food-menu"></i>
+                    <span>Daftar Paket Soal</span>
+                </a>
+            </li>
+        <%} else { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/paket-soal">
+                    <i class="bx bxs-food-menu"></i>
+                    <span>Daftar Paket Soal</span>
+                </a>
+            </li>
+        <% } %>
+        <% if (typeof data.pengguna === 'undefined') { %>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/pengguna">
+                    <i class="ri-account-box-fill"></i>
+                    <span>Daftar Pengguna</span>
+                </a>
+            </li>
+        <%} else { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/pengguna">
+                    <i class="ri-account-box-fill"></i>
+                    <span>Daftar Pengguna</span>
+                </a>
+            </li>
+        <% } %>
+      <!-- End Dashboard Nav -->
+
+  </aside><!-- End Sidebar-->
